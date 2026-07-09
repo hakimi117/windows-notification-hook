@@ -1,43 +1,58 @@
-# windows-notification-hook
+# windows-notification (Claude Code plugin)
 
-A [Claude Code](https://claude.com/claude-code) **skill** that installs a Windows desktop-notification hook.
+A [Claude Code](https://claude.com/claude-code) **plugin** that pops a native Windows 10/11
+desktop notification on key events — no manual setup, the hook activates automatically once the
+plugin is enabled.
 
-Once installed, Claude Code pops a native Windows 10/11 notification when:
+| Event | Fires when | Message |
+|-------|-----------|---------|
+| `Stop` | Claude finishes a response (task done) | 任务已完成 (Task completed) |
+| `Notification` / `permission_prompt` | A permission prompt appears | 需要权限审批 (Permission needed) |
+| `Notification` / `idle_prompt` | Claude is waiting and you've been idle | 等待你的输入 (Waiting for input) |
 
-| Event | Message |
-|-------|---------|
-| A task finishes | 任务已完成 (Task completed) |
-| A permission prompt appears | 需要权限审批 (Permission needed) |
-| Claude is waiting for your input | 等待你的输入 (Waiting for input) |
+The bundled `windows-notification.ps1` tries a Toast notification first and falls back to a tray
+balloon, so it works across Windows 10/11 with no extra dependencies. The hook references the
+script via `${CLAUDE_PLUGIN_ROOT}`, so there are no hard-coded user paths.
 
-The bundled `windows-notification.ps1` tries a Toast notification first and falls back to a
-tray balloon, so it works across Windows 10/11 with no extra dependencies.
+## Install (one-click)
 
-> **Note:** The skill is an *installer*. The notification itself is fired by a Claude Code
-> **hook** (executed by the Claude Code runtime), which this skill sets up in your
-> `~/.claude/settings.json`.
+In any Claude Code session:
 
-## Install
-
-Clone this repo into your Claude Code skills directory:
-
-```bash
-git clone https://github.com/<your-username>/windows-notification-hook.git \
-  "$HOME/.claude/skills/windows-notification-hook"
+```
+/plugin marketplace add hakimi117/windows-notification-hook
+/plugin install windows-notification@hakimi-plugins
 ```
 
-Then, in any Claude Code session, ask:
+Then restart the session (or run `/hooks`) for the hook to take effect. You do **not** need to
+edit `settings.json` yourself.
 
-> 帮我安装 Windows 通知 hook
+Manage it later with:
 
-Claude will read the skill, copy the script to `~/.claude/hooks/`, and merge the hook into
-`~/.claude/settings.json` (preserving your existing settings). Restart the session for the
-hook to take effect.
+```
+/plugin disable windows-notification@hakimi-plugins
+/plugin enable  windows-notification@hakimi-plugins
+```
+
+## Repository layout (marketplace monorepo)
+
+```
+.
+├── .claude-plugin/
+│   └── marketplace.json                 # marketplace catalog
+└── plugins/
+    └── windows-notification/
+        ├── .claude-plugin/
+        │   └── plugin.json              # plugin manifest
+        ├── hooks/
+        │   └── hooks.json               # auto-activating hook definition
+        └── windows-notification.ps1     # the notification script
+```
 
 ## Customize
 
-Edit the `-Message` text in the hook commands to change wording, or remove events you don't
-want. See `SKILL.md` for details.
+Edit the `-Message` text in `plugins/windows-notification/hooks/hooks.json` to change wording, or
+remove events you don't want. Bump `version` in `marketplace.json` and `plugin.json`, commit, and
+push; users update with `/plugin marketplace update hakimi-plugins`.
 
 ## Platform
 

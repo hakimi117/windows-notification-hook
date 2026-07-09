@@ -1,0 +1,18 @@
+{
+  "name": "hakimi-plugins",
+  "owner": {
+    "name": "hakimi117"
+  },
+  "description": "hakimi117's Claude Code plugins",
+  "metadata": {
+    "pluginRoot": "./plugins"
+  },
+  "plugins": [
+    {
+      "name": "windows-notification",
+      "source": "./windows-notification",
+      "description": "Windows desktop notifications for Claude Code (task done / permission prompt / idle)",
+      "version": "1.0.0"
+    }
+  ]
+}

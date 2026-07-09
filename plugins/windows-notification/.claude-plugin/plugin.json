@@ -1,0 +1,11 @@
+{
+  "name": "windows-notification",
+  "displayName": "Windows Notification",
+  "description": "Pop a native Windows 10/11 notification when a task finishes, a permission prompt appears, or Claude is waiting for input.",
+  "version": "1.0.0",
+  "author": {
+    "name": "hakimi117"
+  },
+  "license": "MIT",
+  "keywords": ["windows", "notification", "toast", "hook", "desktop"]
+}
