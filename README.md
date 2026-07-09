@@ -33,6 +33,70 @@ Manage it later with:
 /plugin enable  windows-notification@hakimi-plugins
 ```
 
+## Manual install (traditional git, no plugin system)
+
+Prefer to wire it up yourself, or not using the plugin system? Do it in three steps.
+
+1. **Clone the repo** anywhere:
+
+   ```bash
+   git clone https://github.com/hakimi117/windows-notification-hook.git
+   ```
+
+2. **Copy the script** into your Claude Code hooks directory:
+
+   ```bash
+   mkdir -p "$HOME/.claude/hooks"
+   cp windows-notification-hook/plugins/windows-notification/windows-notification.ps1 \
+      "$HOME/.claude/hooks/windows-notification.ps1"
+   ```
+
+3. **Add the hook** to `~/.claude/settings.json` (merge into any existing `hooks`; use an
+   **absolute** path to the script — replace `<name>` with your Windows username):
+
+   ```json
+   {
+     "hooks": {
+       "Stop": [
+         {
+           "hooks": [
+             {
+               "type": "command",
+               "command": "powershell.exe -ExecutionPolicy Bypass -File 'C:/Users/<name>/.claude/hooks/windows-notification.ps1' -Title 'Claude Code' -Message '任务已完成'",
+               "timeout": 10
+             }
+           ]
+         }
+       ],
+       "Notification": [
+         {
+           "matcher": "permission_prompt",
+           "hooks": [
+             {
+               "type": "command",
+               "command": "powershell.exe -ExecutionPolicy Bypass -File 'C:/Users/<name>/.claude/hooks/windows-notification.ps1' -Title 'Claude Code' -Message '需要权限审批'",
+               "timeout": 10
+             }
+           ]
+         },
+         {
+           "matcher": "idle_prompt",
+           "hooks": [
+             {
+               "type": "command",
+               "command": "powershell.exe -ExecutionPolicy Bypass -File 'C:/Users/<name>/.claude/hooks/windows-notification.ps1' -Title 'Claude Code' -Message '等待你的输入'",
+               "timeout": 10
+             }
+           ]
+         }
+       ]
+     }
+   }
+   ```
+
+   Save `settings.json` as **UTF-8** (so the Chinese text isn't corrupted) and restart the
+   session. Unlike the plugin, this path is hard-coded, so adjust it per machine.
+
 ## Repository layout (marketplace monorepo)
 
 ```
